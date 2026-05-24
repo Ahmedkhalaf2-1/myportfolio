@@ -1,0 +1,14 @@
+.scroll-float {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Important for hiding the characters when they are translated down */
+}
+
+.scroll-float-text {
+  display: inline-block;
+}
+
+.scroll-float .char {
+  display: inline-block;
+  /* GSAP will animate the rest */
+}

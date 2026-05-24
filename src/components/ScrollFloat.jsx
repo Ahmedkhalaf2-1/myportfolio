@@ -1,0 +1,80 @@
+import { useRef } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './ScrollFloat.css';
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+const ScrollFloat = ({
+  children,
+  scrollContainerRef,
+  containerClassName = '',
+  textClassName = '',
+  animationDuration = 1,
+  ease = 'back.inOut(2)',
+  scrollStart = 'center bottom+=50%',
+  scrollEnd = 'bottom bottom-=40%',
+  stagger = 0.03,
+}) => {
+  const containerRef = useRef(null);
+
+  // Safely split text, handling non-strings gracefully
+  const text = children != null ? String(children) : '';
+  const splitText = text.split('').map((char, index) => (
+    <span className="char" key={index} aria-hidden="true">
+      {char === ' ' ? '\u00A0' : char}
+    </span>
+  ));
+
+  useGSAP(
+    () => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      const scroller = scrollContainerRef?.current || window;
+      const charElements = el.querySelectorAll('.char');
+
+      gsap.fromTo(
+        charElements,
+        {
+          willChange: 'opacity, transform',
+          opacity: 0,
+          yPercent: 120,
+          scaleY: 2.3,
+          scaleX: 0.7,
+          transformOrigin: '50% 0%',
+        },
+        {
+          duration: animationDuration,
+          ease: ease,
+          opacity: 1,
+          yPercent: 0,
+          scaleY: 1,
+          scaleX: 1,
+          stagger: stagger,
+          scrollTrigger: {
+            trigger: el,
+            scroller,
+            start: scrollStart,
+            end: scrollEnd,
+            scrub: true,
+          },
+        }
+      );
+    },
+    { dependencies: [scrollContainerRef, animationDuration, ease, scrollStart, scrollEnd, stagger], scope: containerRef }
+  );
+
+  return (
+    <h2
+      ref={containerRef}
+      className={`scroll-float ${containerClassName}`}
+      aria-label={text} // Provide the full text for screen readers
+    >
+      <span className={`scroll-float-text ${textClassName}`}>{splitText}</span>
+    </h2>
+  );
+};
+
+export default ScrollFloat;
