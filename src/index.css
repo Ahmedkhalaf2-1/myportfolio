@@ -3,6 +3,16 @@
    Luxury Black & Gold | Cinematic | Premium
    ============================================ */
 
+/* ── TAN Headline Font Declaration ── */
+@font-face {
+  font-family: 'TAN Headline';
+  src: url('./assets/fonts/TANHEADLINE-Regular.ttf') format('truetype'),
+       url('./assets/fonts/TANHEADLINE-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
   /* ── Colors ── */
@@ -19,15 +29,16 @@
   --gold-glow: rgba(212, 175, 55, 0.18);
   --gold-line: rgba(212, 175, 55, 0.25);
 
-  --white: #FAFAFA;
-  --white-muted: #C8C8C8;
-  --white-dim: #888888;
+  --white: #F5F5F5;
+  --white-muted: #D6D6D6;
+  --white-dim: #A8A8A8;
+  --white-subtle: #777777;
   --white-faint: rgba(250, 250, 250, 0.04);
 
   /* ── Typography ── */
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'Fraunces', Georgia, serif;
-  --font-accent: 'Fraunces', Georgia, serif;
+  --font-display: 'TAN Headline', 'Fraunces', Georgia, serif;
+  --font-body: 'TAN Headline', 'Fraunces', Georgia, serif;
+  --font-accent: 'TAN Headline', 'Fraunces', Georgia, serif;
 
   /* ── Layout ── */
   --section-pad-y: 8rem;
@@ -202,7 +213,7 @@ button {
   font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.85;
-  color: var(--white-muted);
+  color: #D6D6D6;
 }
 
 /* Body paragraph — small */
@@ -211,7 +222,7 @@ button {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.6;
-  color: var(--white-dim);
+  color: #A8A8A8;
 }
 
 /* Utility colour classes */
@@ -500,4 +511,37 @@ button {
   .section {
     padding: 3.75rem 0;
   }
+}
+
+/* ── Global Section Ambient Glows ── */
+.section-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section-glow--tl {
+  top: -10%;
+  left: -18%;
+  width: 680px;
+  height: 680px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.055) 0%, transparent 60%);
+}
+
+.section-glow--br {
+  bottom: 8%;
+  right: -14%;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.032) 0%, transparent 68%);
+}
+
+.section-glow--hero {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 340px;
+  background: radial-gradient(ellipse, rgba(201, 168, 76, 0.022) 0%, transparent 70%);
 }

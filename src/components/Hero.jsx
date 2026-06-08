@@ -1,34 +1,39 @@
 import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
 import TextType from './TextType'
 import HeroBg from '../assets/image copy 4.png'
 import './Hero.css'
 
-/* Stagger container */
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.11, delayChildren: 0.05 } }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.25, 0.46, 0.45, 0.94] } }
-}
-
 const STATS = [
-  { num: '6+', label: 'Projects Built' },
-  { num: '4+', label: 'Design Areas' },
-  { num: '2+', label: 'Years Creating' },
+  { num: '3+', label: 'Years Experience' },
+  { num: '20+', label: 'Projects Shipped' },
+  { num: '10+', label: 'Technologies' },
 ]
 
 export default function Hero() {
   const ref = useRef(null)
+  const shouldReduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
 
-  /* Subtle parallax — content drifts up at 20% of scroll speed */
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.55], [1, 0])
+  /* Subtle parallax — content drifts up at 18% of scroll speed, disabled for reduced motion */
+  const y = shouldReduceMotion ? '0%' : useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
+  const opacity = shouldReduceMotion ? 1 : useTransform(scrollYProgress, [0, 0.55], [1, 0])
+
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: shouldReduceMotion ? 0.05 : 0.11, delayChildren: 0.05 } }
+  }
+
+  const itemVariants = shouldReduceMotion
+    ? {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { duration: 0.4 } }
+    }
+    : {
+      hidden: { opacity: 0, y: 30 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } }
+    }
 
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
@@ -52,37 +57,26 @@ export default function Hero() {
         animate="visible"
         style={{ opacity }}
       >
-        {/* Availability pill */}
-        <motion.div className="hero-pill" variants={itemVariants}>
-          <span className="pill-dot" aria-hidden="true" />
-          Available for Projects
-          <span className="pill-dot" aria-hidden="true" />
-        </motion.div>
-
-        {/* H1 — cinematic stacked headline */}
         <motion.h1 className="hero-title display-xl" variants={itemVariants}>
           <span className="ht-name"><em>Ahmed Khalaf</em></span>
-          <span className="ht-role">
-            full&nbsp;
-            <span className="ht-gold">-stack</span>
-          </span>
-          <span className="ht-sub">Web and app &nbsp;Developer</span>
+          <span className="ht-role">Full-<span className="ht-gold">Stack</span></span>
+          <span className="ht-sub">Web &amp; App Developer</span>
         </motion.h1>
 
         {/* Subtitle with Typing Effect */}
         <motion.div className="hero-subtitle body-lg" variants={itemVariants} style={{ minHeight: '60px' }}>
           <TextType
             text={[
-              "Graduated from HTI, 25 years old.",
-              "Building scalable web applications with React.",
-              "Crafting seamless cross-platform experiences with Flutter."
+              "Specializing in React, Flutter, and scalable web architectures.",
+              "Engineering clean, modular codebases and production-grade systems.",
+              "Building premium interfaces with thoughtful design and real business value."
             ]}
             typingSpeed={60}
             deletingSpeed={30}
             pauseDuration={2500}
             showCursor={true}
             cursorCharacter="_"
-            textColors={['#C8C8C8', '#D4AF37', '#FAFAFA']}
+            textColors={['#D6D6D6', '#D4AF37', '#F5F5F5']}
           />
         </motion.div>
 
@@ -100,8 +94,17 @@ export default function Hero() {
             onClick={() => scrollTo('contact')}
             id="hero-contact"
           >
-            Get in Touch
+            Contact Me
           </button>
+          <a
+            href="/resume.pdf"
+            className="btn btn-ghost"
+            target="_blank"
+            rel="noopener noreferrer"
+            id="hero-download-cv"
+          >
+            Download CV
+          </a>
         </motion.div>
 
         {/* Stats strip */}

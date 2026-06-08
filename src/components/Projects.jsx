@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import ProjectModal from './ProjectModal'
 import './Projects.css'
 
@@ -16,13 +16,16 @@ const projects = [
     name: 'Salon System',
     icon: 'SS',
     image: salonImg,
-    desc: 'A luxury salon management web dashboard built in React, focused on streamlining bookings, services, and premium business operations.',
-    category: 'React Web',
+    desc: 'A luxury salon management dashboard built to help salon owners manage bookings, services, customers, and daily business operations through a clean and premium interface.',
+    problem: 'Salon businesses need a simple way to organize bookings, services, and customer activity without relying on manual tracking.',
+    role: 'Designed and developed the dashboard interface, frontend structure, and core management flow.',
+    value: 'A cleaner workflow for managing salon operations with a professional user experience.',
+    category: 'React Web Dashboard',
     focus: 'Dashboard · React',
     year: '2024',
     accent: '#F472B6',
     bg: 'linear-gradient(135deg, #18030e 0%, #250516 50%, #18030e 100%)',
-    tags: ['React', 'Management', 'Dashboard'],
+    tags: ['React', 'Dashboard UI', 'Management System'],
   },
   {
     name: 'Pharma System',
@@ -110,42 +113,14 @@ const projects = [
 
 /* ─────────────────────────────────────────────────
    ANIMATION VARIANTS
+   (Will be dynamically adjusted within the component based on reduced motion)
 ───────────────────────────────────────────────── */
-const imgVariants = {
-  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 48 : -48, scale: 0.97 }),
-  center: {
-    opacity: 1, x: 0, scale: 1,
-    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
-  },
-  exit: (dir) => ({
-    opacity: 0, x: dir > 0 ? -48 : 48, scale: 0.97,
-    transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
-  }),
-}
-
-/* Content children stagger */
-const contentParent = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-}
-const contentChild = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.44, ease: [0.25, 0.46, 0.45, 0.94] } },
-}
-
-const pillParent = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.22 } },
-}
-const pillItem = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
-}
 
 /* ─────────────────────────────────────────────────
    COMPONENT
-───────────────────────────────────────────────── */
+   ───────────────────────────────────────────────── */
 export default function Projects() {
+  const shouldReduceMotion = useReducedMotion()
   const [index, setIndex]      = useState(0)
   const [dir, setDir]          = useState(1)
   const [modalOpen, setModalOpen] = useState(false)
@@ -181,15 +156,61 @@ export default function Projects() {
     return () => window.removeEventListener('keydown', onKey)
   }, [goNext, goPrev, modalOpen])
 
+  // Dynamic animation variants based on accessibility preference
+  const sectionVariants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
+    : { hidden: { opacity: 0, y: 36 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } }
+
+  const imgVariants = shouldReduceMotion
+    ? {
+        enter: { opacity: 0 },
+        center: { opacity: 1, transition: { duration: 0.3 } },
+        exit: { opacity: 0, transition: { duration: 0.25 } }
+      }
+    : {
+        enter: (dir) => ({ opacity: 0, y: dir > 0 ? 25 : -25, scale: 0.97 }),
+        center: {
+          opacity: 1, y: 0, scale: 1,
+          transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+        },
+        exit: (dir) => ({
+          opacity: 0, y: dir > 0 ? -25 : 25, scale: 0.97,
+          transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+        }),
+      }
+
+  const contentParent = {
+    hidden: {},
+    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.08, delayChildren: shouldReduceMotion ? 0 : 0.3 } },
+  }
+
+  const contentChild = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.3 } } }
+    : { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.44, ease: [0.22, 1, 0.36, 1] } } }
+
+  const pillParent = {
+    hidden: {},
+    visible: { transition: { staggerChildren: shouldReduceMotion ? 0 : 0.07, delayChildren: shouldReduceMotion ? 0 : 0.22 } },
+  }
+
+  const pillItem = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.25 } } }
+    : { hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } } }
+
   return (
     <motion.section
       id="projects"
       className="section projects-section"
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.06 }}
-      transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.25 }}
+      variants={sectionVariants}
     >
+      {/* Ambient glows copied from About Me */}
+      <div className="section-glow section-glow--tl" />
+      <div className="section-glow section-glow--br" />
+      <div className="section-glow section-glow--hero" />
+
       <div className="container">
 
         {/* ── Top bar ── */}
@@ -244,13 +265,13 @@ export default function Projects() {
                 {/* Number badge */}
                 <div className="mag-num-badge">{pad(index)}</div>
 
-                {project.image ? (
+                 {project.image ? (
                   <motion.img
                     src={project.image}
                     alt={project.name}
                     className="mag-img"
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.03 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     style={{ cursor: project.link ? 'pointer' : 'default' }}
                     onClick={() => {
                       if (project.link) {
@@ -266,8 +287,8 @@ export default function Projects() {
                       color: project.accent,
                       cursor: project.link ? 'pointer' : 'default'
                     }}
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ duration: 0.5 }}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.03 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     onClick={() => {
                       if (project.link) {
                         window.open(project.link, '_blank', 'noopener,noreferrer');
@@ -317,6 +338,22 @@ export default function Projects() {
                 <motion.p className="mag-desc" variants={contentChild}>
                   {project.desc}
                 </motion.p>
+
+                {/* Case Study Details */}
+                {project.role && (
+                  <motion.div className="mag-case-study" variants={contentChild}>
+                    <div className="mag-case-item">
+                      <span className="mag-case-label">My Role</span>
+                      <span className="mag-case-value">{project.role}</span>
+                    </div>
+                    {project.value && (
+                      <div className="mag-case-item">
+                        <span className="mag-case-label">Result</span>
+                        <span className="mag-case-value">{project.value}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
 
                 {/* Tech pills */}
                 <motion.ul

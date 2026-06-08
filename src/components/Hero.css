@@ -38,7 +38,7 @@
   height: 92%;
   object-fit: contain;
   object-position: right center;
-  opacity: 120;
+  opacity: 1;
 
   margin-left: auto;
   transform: translate(5vw, 8vh);
@@ -48,9 +48,9 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to right, var(--black) 14%, rgba(0, 0, 0, 0.82) 34%, transparent 68%),
-    linear-gradient(to bottom, var(--black) 0%, transparent 15%, transparent 85%, var(--black) 100%),
-    radial-gradient(circle at center, rgba(8, 8, 8, 0.2) 0%, var(--black) 98%);
+    linear-gradient(to right, var(--black) 14%, rgba(0, 0, 0, 0.72) 34%, transparent 68%),
+    linear-gradient(to bottom, var(--black) 0%, transparent 12%, transparent 88%, var(--black) 100%),
+    radial-gradient(circle at center, rgba(8, 8, 8, 0.15) 0%, var(--black) 98%);
 }
 
 /* Subtle radial gold glow — very restrained */
@@ -184,8 +184,9 @@
   flex-direction: column;
   gap: 0.04em;
   margin-bottom: 1.25rem;
-  font-size: 0.85em;
+  font-size: clamp(1.2rem, 2.2vw, 1.7rem);
   max-width: 680px;
+  line-height: 1.05;
 }
 
 .ht-name {
@@ -200,7 +201,7 @@
 .ht-role {
   color: var(--white);
   letter-spacing: -0.025em;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 /* Shimmer gold gradient — gold word only */
@@ -218,11 +219,11 @@
 }
 
 .ht-sub {
-  font-size: 0.6em;
+  font-size: 0.45em;
   font-weight: 400;
   color: rgba(248, 248, 248, 0.42);
   letter-spacing: -0.01em;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 /* Subtitle paragraph */

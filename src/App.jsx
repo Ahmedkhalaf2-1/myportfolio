@@ -8,6 +8,7 @@ import HowIWork from './components/HowIWork'
 import Projects from './components/Projects'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import SmoothScroll from './components/SmoothScroll'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -32,6 +33,7 @@ function App() {
           transition: 'opacity 0.6s ease-in-out',
         }}
       >
+        <SmoothScroll />
         <Navbar />
 
         <main>

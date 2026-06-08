@@ -1,3 +1,4 @@
+import AkhLogo from '../assets/AKH.png'
 import './Footer.css'
 
 export default function Footer() {
@@ -9,8 +10,8 @@ export default function Footer() {
         {/* Gold divider */}
         <div className="footer-divider">
           <div className="divider-line" />
-          <div className="divider-mark">
-            <span className="footer-mark-letter">A</span>
+          <div className="divider-mark" aria-hidden="true">
+            <img src={AkhLogo} alt="" className="footer-divider-logo-img" />
           </div>
           <div className="divider-line" />
         </div>
@@ -20,8 +21,7 @@ export default function Footer() {
           {/* Left: Brand */}
           <div className="footer-brand">
             <div className="footer-logo">
-              <span className="footer-logo-mark">A</span>
-              <span className="footer-logo-name">Ahmed</span>
+              <img src={AkhLogo} alt="AKH Logo" className="footer-brand-logo-img" />
             </div>
             <p className="footer-tagline">
               Creative Developer & UI/UX Designer

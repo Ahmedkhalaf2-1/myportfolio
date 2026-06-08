@@ -6,12 +6,12 @@
 .how-i-work-section {
   position: relative;
   overflow: hidden;
-  background-color: #000000;
-  padding: 8rem 0;
+  background-color: var(--black);
+  padding: 6rem 0;
 }
 
 .section-header-wrap {
-  margin-bottom: 5.5rem;
+  margin-bottom: 3.5rem;
 }
 
 .how-i-work-title {
@@ -64,7 +64,7 @@
 .roadmap-rows {
   display: flex;
   flex-direction: column;
-  gap: 5.5rem; /* Large spacing between steps */
+  gap: 4rem; /* Reduced from 5.5rem */
 }
 
 /* Timeline Step Row (Desktop Layout) */
@@ -146,7 +146,7 @@
   font-family: var(--font-body);
   font-size: 0.96rem;
   line-height: 1.85;
-  color: rgba(255, 255, 255, 0.65);
+  color: #BEBEBE;
   margin: 0 0 1.5rem 0;
   max-width: 620px;
 }
@@ -248,4 +248,29 @@
   .roadmap-rows {
     gap: 3.5rem;
   }
+}
+
+/* ── Active Step Timeline States ── */
+.roadmap-step-row {
+  transition: opacity 450ms ease;
+}
+
+.roadmap-step-row--active .roadmap-large-num {
+  color: var(--gold-light) !important;
+  text-shadow: 0 0 15px rgba(244, 208, 104, 0.35);
+  transform: scale(1.05);
+}
+
+.roadmap-step-row--active .roadmap-node-dot {
+  transform: scale(1.35);
+  background: var(--gold-light) !important;
+  box-shadow: 0 0 14px var(--gold) !important;
+}
+
+.roadmap-step-row--active .roadmap-step-title {
+  color: #ffffff !important;
+}
+
+.roadmap-step-row--active .roadmap-step-desc {
+  color: #F5F5F5 !important;
 }

@@ -1,0 +1,2 @@
+Place your Tan Headline font files (Tan-Headline.woff2, Tan-Headline.woff, Tan-Headline.ttf, or Tan-Headline.otf) in this directory.
+Once copied, they will automatically map to the CSS font-face configuration.

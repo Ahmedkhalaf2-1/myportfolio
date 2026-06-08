@@ -6,7 +6,7 @@
 .contact-section {
   position: relative;
   overflow: hidden;
-  background-color: #000000;
+  background-color: var(--black);
   padding: 4.5rem 0 5.5rem; /* Reduced vertical padding by ~40% */
 }
 
@@ -44,9 +44,9 @@
 
 .contact-hero-intro {
   font-family: var(--font-body);
-  font-size: 1.05rem; /* Reduced slightly */
+  font-size: 1.05rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.65);
+  color: #BEBEBE;
   max-width: 580px;
   margin: 0;
   letter-spacing: -0.01em;
@@ -119,7 +119,7 @@
 
 .conv-textarea::placeholder,
 .conv-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .conv-textarea {
@@ -274,7 +274,7 @@
 
 .btn-send-message:hover {
   background-position: 100% center;
-  box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+  box-shadow: 0 0 24px rgba(229, 199, 107, 0.45);
 }
 
 .btn-send-message--sending {
@@ -430,4 +430,44 @@
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+}
+
+/* ── Email Row + Copy Button ── */
+.editorial-email-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.editorial-email-link {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.editorial-email-link:hover {
+  color: var(--gold-light);
+}
+
+.copy-email-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #A8A8A8;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-family: var(--font-accent);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+
+.copy-email-btn:hover {
+  border-color: var(--gold-line);
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.04);
 }

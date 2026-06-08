@@ -1,4 +1,4 @@
-import { motion, useInView, animate } from 'framer-motion'
+import { motion, useInView, animate, useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import AnimatedSection from './AnimatedSection'
 import './About.css'
@@ -40,50 +40,10 @@ function StatCounter({ target, label }) {
 }
 
 /* ══════════════════════════════════════
-   ANIMATION VARIANTS
-   ══════════════════════════════════════ */
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-}
-
-const line1Variants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-}
-
-const line2Variants = {
-  hidden: { opacity: 0, y: 32, clipPath: 'inset(0 100% 0 0)' },
-  visible: {
-    opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0)',
-    transition: { duration: 0.9, delay: 0.28, ease: [0.16, 1, 0.3, 1] },
-  },
-}
-
-/* Grid stagger — cards enter in defined order */
-const gridVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-}
-
-/* ══════════════════════════════════════
    MAIN COMPONENT
    ══════════════════════════════════════ */
 export default function About() {
+  const shouldReduceMotion = useReducedMotion()
   /* Focus-defocus state: which card is hovered */
   const [hoveredCard, setHoveredCard] = useState(null)
 
@@ -94,13 +54,39 @@ export default function About() {
     return hoveredCard === id ? 'bento-card--focused' : 'bento-card--dimmed'
   }
 
+  // Dynamic animation variants for editorial design
+  const sectionVariants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
+    : { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } }
+
+  const line1Variants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
+    : { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } }
+
+  const line2Variants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
+    : { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] } } }
+
+  const gridVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: shouldReduceMotion ? 0.05 : 0.1, delayChildren: 0.1 } }
+  }
+
+  const cardVariants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.3 } } }
+    : { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }
+
+  const statsCardVariants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
+    : { hidden: { opacity: 0, scale: 0.96, y: 15 }, visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } }
+
   return (
     <motion.section
       id="about"
       className="section about-section"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.06 }}
+      viewport={{ once: true, amount: 0.25 }}
       variants={sectionVariants}
     >
       {/* Ambient glows */}
@@ -152,16 +138,16 @@ export default function About() {
             <p className="bento-eyebrow">Who I Am</p>
             <p className="bento-about-bio">
               I'm <strong className="gold-key">Ahmed Khalaf</strong> — a Software
-              Engineer graduated from <span className="gold-key">HTI</span>{' '}
-              (Higher Technological Institute). I build end-to-end digital products
-              that are both technically solid and visually refined.
+              Engineer and full-stack web &amp; mobile developer. I design and build
+              polished digital products that combine clean engineering, premium
+              interfaces, and real business value.
             </p>
             <p className="bento-about-bio">
-              My stack spans <span className="gold-key">React</span> on the web,{' '}
-              <span className="gold-key">Flutter</span> on mobile, solid{' '}
-              <span className="gold-key">Backend</span> engineering, and{' '}
-              <span className="gold-key">AI</span>-assisted workflows — giving me
-              the range to ship complete, production-ready systems.
+              My work spans <span className="gold-key">React</span> web applications,{' '}
+              <span className="gold-key">Flutter</span> mobile apps,{' '}
+              <span className="gold-key">backend</span> systems, and{' '}
+              <span className="gold-key">AI</span>-assisted workflows — allowing me
+              to ship complete, scalable, and production-ready products.
             </p>
             <div className="bento-about-meta">
               <div className="bento-meta-row">
@@ -242,7 +228,7 @@ export default function About() {
           {/* 6 · Secondary — Career Highlights */}
           <motion.div
             className={`bento-card bento-stats ${getCardClass('stats')}`}
-            variants={cardVariants}
+            variants={statsCardVariants}
             onHoverStart={() => setHoveredCard('stats')}
             onHoverEnd={() => setHoveredCard(null)}
           >

@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import './Contact.css'
 
 export default function Contact() {
+  const shouldReduceMotion = useReducedMotion()
+
   const [formData, setFormData] = useState({
     message: '',
     name: '',
@@ -11,10 +13,11 @@ export default function Contact() {
     budget: '',
     timeline: ''
   })
-  
+
   const [showOptional, setShowOptional] = useState(false)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const handleTextChange = e => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -41,24 +44,51 @@ export default function Contact() {
     setTimeout(() => setSent(false), 4000)
   }
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } }
+  const fadeInUp = shouldReduceMotion
+    ? {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { duration: 0.4 } }
+    }
+    : {
+      hidden: { opacity: 0, y: 25 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+    }
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0 : 0.12,
+        delayChildren: 0.05
+      }
+    }
   }
+
+  const childVariants = shouldReduceMotion
+    ? {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { duration: 0.4 } }
+    }
+    : {
+      hidden: { opacity: 0, y: 30 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } }
+    }
 
   return (
     <section id="contact" className="section contact-section">
-      <div className="contact-ambient-glow" />
-      <div className="contact-heading-glow" />
+      {/* Ambient glows copied from About Me */}
+      <div className="section-glow section-glow--tl" />
+      <div className="section-glow section-glow--br" />
+      <div className="section-glow section-glow--hero" />
 
       <div className="container">
-        
+
         {/* ── Section Header ── */}
-        <motion.div 
+        <motion.div
           className="contact-header-wrap"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.25 }}
           variants={fadeInUp}
         >
           <div className="section-label">
@@ -73,12 +103,18 @@ export default function Contact() {
         </motion.div>
 
         {/* ── Contact Grid Layout ── */}
-        <div className="contact-layout-grid">
-          
+        <motion.div
+          className="contact-layout-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          variants={containerVariants}
+        >
+
           {/* LEFT: Compact Form */}
-          <div className="contact-form-side">
+          <motion.div className="contact-form-side" variants={childVariants}>
             <form onSubmit={handleSubmit} className="conversational-form">
-              
+
               {/* STEP 1: Message */}
               <div className="form-step-block">
                 <div className="step-num-tag">Step 01</div>
@@ -147,7 +183,7 @@ export default function Contact() {
                   className="accordion-toggle-btn"
                 >
                   <span>Optional Project Details</span>
-                  <motion.span 
+                  <motion.span
                     className="accordion-toggle-icon"
                     animate={{ rotate: showOptional ? 45 : 0 }}
                     transition={{ duration: 0.2 }}
@@ -248,22 +284,38 @@ export default function Contact() {
               </div>
 
             </form>
-          </div>
-          
+          </motion.div>
+
           {/* RIGHT: Compact Info Panel */}
-          <motion.div 
+          <motion.div
             className="contact-info-side"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            variants={childVariants}
           >
             <div className="editorial-info-wrap">
-              
+
               {/* Based In */}
               <div className="info-editorial-block">
                 <span className="editorial-label">Based In</span>
                 <span className="editorial-value">Egypt</span>
+              </div>
+
+              {/* Email */}
+              <div className="info-editorial-block">
+                <span className="editorial-label">Email</span>
+                <div className="editorial-email-row">
+                  <a href="mailto:ahmed@khalaf.dev" className="editorial-email-link">ahmed@khalaf.dev</a>
+                  <button
+                    type="button"
+                    className="copy-email-btn"
+                    onClick={() => {
+                      navigator.clipboard.writeText('ahmed@khalaf.dev')
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 2000)
+                    }}
+                  >
+                    {copied ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
               </div>
 
               {/* Building */}
@@ -290,7 +342,8 @@ export default function Contact() {
                   {[
                     { name: 'LinkedIn', href: 'https://linkedin.com/in/ahmed' },
                     { name: 'Behance', href: 'https://behance.net/ahmed' },
-                    { name: 'GitHub', href: 'https://github.com/ahmed' }
+                    { name: 'GitHub', href: 'https://github.com/ahmed' },
+                    { name: 'WhatsApp', href: 'https://wa.me/201234567890' }
                   ].map(social => (
                     <motion.a
                       key={social.name}
@@ -310,7 +363,7 @@ export default function Contact() {
             </div>
           </motion.div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>
