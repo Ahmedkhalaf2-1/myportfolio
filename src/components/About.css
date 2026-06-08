@@ -1,124 +1,602 @@
+/* ══════════════════════════════════════════════════
+   ABOUT SECTION — Premium Bento Grid
+   Luxury Black & Gold | Apple × Linear × Framer
+   ══════════════════════════════════════════════════ */
+
 .about-section {
   overflow: hidden;
+  position: relative;
 }
 
-/* Subtle left-side glow */
+/* ── Ambient glows ── */
 .about-glow {
   position: absolute;
-  top: 10%;
-  left: -18%;
-  width: 480px;
-  height: 480px;
   border-radius: 50%;
-  background: radial-gradient(circle,
-      rgba(201, 168, 76, 0.045) 0%,
-      transparent 68%);
   pointer-events: none;
 }
 
-/* ── Two-column grid ── */
-.about-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 4.5rem;
-  align-items: start;
+.about-glow--tl {
+  top: -10%;
+  left: -18%;
+  width: 680px;
+  height: 680px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.055) 0%, transparent 60%);
 }
 
-/* ── Left column ── */
-.about-left {
+.about-glow--br {
+  bottom: 8%;
+  right: -14%;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.032) 0%, transparent 68%);
+}
+
+/* Extra glow that sits behind the hero headline */
+.about-glow--hero {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 340px;
+  background: radial-gradient(ellipse, rgba(201, 168, 76, 0.022) 0%, transparent 70%);
+}
+
+/* ══════════════════════════════════════════════════
+   CINEMATIC HEADLINE
+   ══════════════════════════════════════════════════ */
+.about-hero-hl {
+  font-family: var(--font-display);
+  font-size: clamp(3.6rem, 7.8vw, 7.2rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.038em;
+  color: var(--white);
+  /* Tighter gap to grid — visual composition unity */
+  margin: 1rem 0 2.5rem;
+}
+
+.about-hl-line {
+  display: inline-block;
+}
+
+.about-hl-line--gold {
+  font-style: italic;
+  /* subtle shimmer underline beneath gold line */
+  position: relative;
+}
+
+.about-hl-line--gold::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.6) 0%,
+    rgba(212, 175, 55, 0.15) 60%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* ══════════════════════════════════════════════════
+   BENTO GRID
+   5-col layout:
+     Row 1: [about ×3] [react ×1] [mobile ×1]
+     Row 2: [about ×3] [backend ×2]
+     Row 3: [ai ×2   ] [stats ×3]
+   ══════════════════════════════════════════════════ */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 0.9rem;
+  grid-template-areas:
+    "about about about react   mobile"
+    "about about about backend backend"
+    "ai    ai    stats stats   stats";
+  margin-bottom: 3.5rem;
+}
+
+/* Grid area assignments */
+.bento-about   { grid-area: about; }
+.bento-react   { grid-area: react; }
+.bento-mobile  { grid-area: mobile; }
+.bento-backend { grid-area: backend; }
+.bento-ai      { grid-area: ai; }
+.bento-stats   { grid-area: stats; }
+
+/* ══════════════════════════════════════════════════
+   BASE CARD
+   ══════════════════════════════════════════════════ */
+.bento-card {
+  background: var(--black-card);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 20px;
+  padding: 1.875rem;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.52),
+    0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  transition:
+    transform      300ms var(--ease-luxury),
+    border-color   300ms var(--ease-luxury),
+    box-shadow     300ms var(--ease-luxury),
+    opacity        300ms var(--ease-luxury),
+    filter         300ms var(--ease-luxury);
+  will-change: transform, opacity;
+}
+
+/* Radial mouse-tracking spotlight */
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    520px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(212, 175, 55, 0.058),
+    transparent 46%
+  );
+  opacity: 0;
+  transition: opacity 380ms ease;
+  pointer-events: none;
+}
+
+/* Top gold shimmer hairline */
+.bento-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.5) 38%,
+    rgba(212, 175, 55, 0.5) 62%,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 300ms var(--ease-luxury);
+  pointer-events: none;
+}
+
+/* ── Base hover (scale + lift + glow) ── */
+.bento-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(212, 175, 55, 0.07),
+    0 0 36px rgba(212, 175, 55, 0.07);
+}
+
+.bento-card:hover::before { opacity: 1; }
+.bento-card:hover::after  { opacity: 1; }
+
+/* ── Focus / Defocus system ── */
+.bento-card--focused {
+  /* handled by Framer whileHover — CSS just ensures z-index */
+  z-index: 2;
+}
+
+.bento-card--dimmed {
+  opacity: 0.5;
+  filter: blur(0.6px) brightness(0.85);
+  transform: scale(0.99);
+}
+
+/* ── Eyebrow label ── */
+.bento-eyebrow {
+  font-family: var(--font-accent);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.55);
+  margin: 0 0 1rem;
+}
+
+/* ── Card heading ── */
+.bento-card-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(250, 250, 250, 0.9);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 1.25rem;
+  transition: color 260ms ease;
+}
+
+.bento-card:hover .bento-card-title { color: #fff; }
+
+/* ── Pill tags ── */
+.bento-pill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.42rem;
 }
 
-.about-title {
-  line-height: 1.12;
-  margin-top: 0.25rem;
-}
-
-.about-title em {
-  font-style: italic;
-}
-
-.about-para {
-  max-width: 460px;
-}
-
-.about-para+.about-para {
-  margin-top: 0.875rem;
-}
-
-.about-badges {
-  display: flex;
+.bento-pill-list--row {
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 0.25rem;
 }
 
-/* ── Right column: Trait cards ── */
-.about-right {
+.bento-pill {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: rgba(250, 250, 250, 0.46);
+  background: rgba(255, 255, 255, 0.032);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  padding: 0.32rem 0.72rem;
+  line-height: 1.4;
+  transition: color 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.bento-card:hover .bento-pill {
+  color: rgba(250, 250, 250, 0.72);
+  border-color: rgba(212, 175, 55, 0.16);
+  background: rgba(212, 175, 55, 0.035);
+}
+
+/* ══════════════════════════════════════════════════
+   PRIMARY — ABOUT CARD
+   Dominant focal point. Slightly brighter, more visible
+   border, internal gold ambient glow.
+   ══════════════════════════════════════════════════ */
+.bento-about {
+  /* Brighter background than other cards */
+  background: #111111;
+  /* More visible border */
+  border-color: rgba(255, 255, 255, 0.09);
+  /* Soft ambient gold shadow */
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.52),
+    0 0 60px rgba(212, 175, 55, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  justify-content: space-between;
+  gap: 1.25rem;
+
+  /* Slightly more padding for dominance */
+  padding: 2.25rem;
 }
 
-.trait-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.125rem;
-  padding: 1.125rem 1.375rem;
-  cursor: default;
+/* Persistent subtle gold left-side glow on about card */
+.bento-about::before {
+  background: radial-gradient(
+    420px circle at 0% 60%,
+    rgba(212, 175, 55, 0.06),
+    transparent 55%
+  );
+  opacity: 1 !important;
 }
 
-.trait-number {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
+.bento-about:hover {
+  border-color: rgba(212, 175, 55, 0.25);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.78),
+    0 0 0 1px rgba(212, 175, 55, 0.09),
+    0 0 48px rgba(212, 175, 55, 0.1);
+}
+
+.bento-about-bio {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
   font-weight: 400;
-  color: rgba(201, 168, 76, 0.22);
-  line-height: 1;
-  flex-shrink: 0;
-  padding-top: 0.15rem;
-  transition: color var(--t-base) ease;
-  min-width: 2rem;
+  line-height: 1.92;
+  color: rgba(250, 250, 250, 0.62);
+  margin: 0;
 }
 
-.trait-card:hover .trait-number {
-  color: rgba(201, 168, 76, 0.6);
+/* Gold keyword highlights */
+.gold-key {
+  color: var(--gold);
+  font-weight: 600;
+  background: none;
 }
 
-.trait-content {
-  flex: 1;
+/* Meta table at bottom of about card */
+.bento-about-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding-top: 1.375rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin-top: auto;
 }
 
-.trait-title {
+.bento-meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.bento-meta-key {
   font-family: var(--font-accent);
-  font-size: 0.9rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.48);
+  min-width: 5rem;
+  flex-shrink: 0;
+}
+
+.bento-meta-val {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: rgba(250, 250, 250, 0.52);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════
+   SECONDARY — STATS / CAREER HIGHLIGHTS CARD
+   Impressive metrics showcase.
+   ══════════════════════════════════════════════════ */
+.bento-stats {
+  display: flex;
+  flex-direction: column;
+  background: #0f0f0f;
+  border-color: rgba(255, 255, 255, 0.075);
+}
+
+.bento-stats-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-top: 1.125rem;
+  gap: 0;
+}
+
+.bento-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+}
+
+.bento-stat-divider {
+  width: 1px;
+  height: 64px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(255, 255, 255, 0.1) 70%,
+    transparent
+  );
+  flex-shrink: 0;
+  margin: 0 2rem;
+}
+
+/* Big animated number */
+.bento-stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 0.2rem;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  transition: color 260ms ease;
 }
 
-.trait-desc {
+.bento-stats:hover .bento-stat-num { color: #fff; }
+
+.bento-stat-sup {
+  font-size: 1.8rem;
+  color: var(--gold);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.bento-stat-label {
   font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: rgba(250, 250, 250, 0.38);
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+  transition: color 260ms ease;
+}
+
+.bento-stats:hover .bento-stat-label {
+  color: rgba(250, 250, 250, 0.56);
+}
+
+/* ══════════════════════════════════════════════════
+   CTA AREA
+   ══════════════════════════════════════════════════ */
+.about-cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.about-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  padding: 0.84rem 1.875rem;
+  border-radius: 8px;
+  font-family: var(--font-accent);
   font-size: 0.8rem;
-  color: rgba(248, 248, 248, 0.38);
-  line-height: 1.6;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  /* Framer handles transform/scale — CSS handles color/shadow */
+  transition:
+    box-shadow        260ms var(--ease-luxury),
+    background-position 260ms var(--ease-luxury),
+    border-color      260ms var(--ease-luxury),
+    color             260ms var(--ease-luxury);
 }
 
-/* Bottom divider */
-.about-divider {
-  margin-top: 5rem;
+/* Primary — gold shimmer fill */
+.about-cta-btn--primary {
+  background: linear-gradient(110deg, #9f7a1b 0%, var(--gold-light) 48%, #9f7a1b 100%);
+  background-size: 220% 100%;
+  background-position: 0% center;
+  color: #05040a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 2.75rem;
+.about-cta-btn--primary:hover {
+  background-position: 100% center;
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.42), 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* Ghost — minimal outline */
+.about-cta-btn--ghost {
+  background: transparent;
+  color: var(--white-muted);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+.about-cta-btn--ghost:hover {
+  color: var(--gold-light);
+  border-color: rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.04);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.12), 0 6px 22px rgba(0, 0, 0, 0.42);
+}
+
+.about-cta-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.72;
+  flex-shrink: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.about-cta-btn--ghost:hover .about-cta-icon {
+  transform: translateY(2px);
+  opacity: 1;
+}
+
+/* ── Divider ── */
+.about-divider { margin-top: 5rem; }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+
+/* 4-col */
+@media (max-width: 1200px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "about about react   mobile"
+      "about about backend backend"
+      "ai    ai    stats   stats";
+  }
+}
+
+/* 3-col — about full top */
+@media (max-width: 980px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+      "about   about   about"
+      "react   mobile  backend"
+      "ai      ai      stats";
   }
 
-  .about-para {
-    max-width: 100%;
+  .bento-stats-row { flex-wrap: wrap; gap: 1.5rem; }
+  .bento-stat-divider { display: none; }
+  .bento-stat { flex: 0 0 calc(33% - 1rem); }
+}
+
+/* 2-col tablet */
+@media (max-width: 700px) {
+  .about-hero-hl {
+    font-size: clamp(2.8rem, 10vw, 4.2rem);
+    margin-bottom: 2.25rem;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "about   about"
+      "react   mobile"
+      "backend backend"
+      "ai      ai"
+      "stats   stats";
+    gap: 0.75rem;
+  }
+
+  /* No dimming on touch devices */
+  .bento-card--dimmed {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+/* 1-col mobile */
+@media (max-width: 480px) {
+  .about-hero-hl {
+    font-size: clamp(2.4rem, 11vw, 3.2rem);
+    margin-bottom: 2rem;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "about"
+      "react"
+      "mobile"
+      "backend"
+      "ai"
+      "stats";
+    gap: 0.7rem;
+  }
+
+  .bento-card { padding: 1.5rem; }
+  .bento-about { padding: 1.625rem; }
+
+  .bento-stats-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .bento-stat-divider { display: none; }
+
+  .about-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-cta-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .bento-card--dimmed {
+    opacity: 1;
+    filter: none;
+    transform: none;
   }
 }

@@ -46,9 +46,8 @@ const YoutubeIcon = ({ size = 18 }) => (
 const navLinks = [
   { label: 'HOME', href: '#hero' },
   { label: 'ABOUT', href: '#about' },
-  { label: 'SKILLS', href: '#skills' },
+  { label: 'PROCESS', href: '#process' },
   { label: 'PROJECTS', href: '#projects' },
-  { label: 'EXPERIENCE', href: '#experience' },
   { label: 'CONTACT', href: '#contact' },
 ]
 

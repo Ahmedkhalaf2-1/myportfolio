@@ -1,0 +1,265 @@
+/* ══════════════════════════════════════════════════
+   PROJECT MODAL
+   Always viewport-centered via position: fixed
+   ══════════════════════════════════════════════════ */
+
+/* Backdrop — covers full viewport, any scroll position */
+.pmodal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 2000;
+}
+
+/* Shell — fixed flex container, always centered */
+.pmodal-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  /* Click-through except where modal-content blocks it */
+}
+
+/* Modal card */
+.pmodal-content {
+  background: #0c0c0c;
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  border-radius: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  overflow: hidden;
+  overflow-y: auto;
+  position: relative;
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.82),
+    0 0 0 1px rgba(212, 175, 55, 0.06),
+    0 0 60px rgba(212, 175, 55, 0.04);
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.25) transparent;
+}
+
+.pmodal-content::-webkit-scrollbar { width: 4px; }
+.pmodal-content::-webkit-scrollbar-track { background: transparent; }
+.pmodal-content::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.25);
+  border-radius: 2px;
+}
+
+/* Close button */
+.pmodal-close {
+  position: absolute;
+  top: 1.125rem;
+  right: 1.125rem;
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 280ms ease, border-color 280ms ease, color 280ms ease, transform 280ms ease;
+}
+
+.pmodal-close:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+  transform: rotate(90deg);
+}
+
+/* Image area */
+.pmodal-visual {
+  position: relative;
+  width: 100%;
+  height: 290px;
+  background: #111;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pmodal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.pmodal-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.pmodal-visual-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 55%, #0c0c0c 100%);
+  pointer-events: none;
+}
+
+/* Info block */
+.pmodal-info {
+  padding: 1.875rem 2.25rem 2.25rem;
+}
+
+.pmodal-header {
+  margin-bottom: 1.125rem;
+}
+
+.pmodal-category {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.pmodal-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.pmodal-body { }
+
+.pmodal-desc {
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.8;
+  margin: 0 0 1.5rem;
+}
+
+.pmodal-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.875rem;
+  margin-bottom: 1.625rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 14px;
+}
+
+.pmodal-detail-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.pmodal-icon {
+  color: var(--gold);
+  opacity: 0.75;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.pmodal-detail-label {
+  display: block;
+  font-family: var(--font-accent);
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.25rem;
+}
+
+.pmodal-detail-val {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* Actions */
+.pmodal-actions { }
+
+.pmodal-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.9rem 1.75rem;
+  background: linear-gradient(110deg, #9f7a1b 0%, var(--gold-light) 48%, #9f7a1b 100%);
+  background-size: 220% 100%;
+  background-position: 0% center;
+  color: #05040a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-decoration: none;
+  font-family: var(--font-accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background-position 280ms var(--ease-luxury),
+    transform           280ms var(--ease-luxury),
+    box-shadow          280ms var(--ease-luxury);
+}
+
+.pmodal-primary-btn:hover {
+  background-position: 100% center;
+  transform: translateY(-3px);
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.38), 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.pmodal-primary-btn:active { transform: translateY(-1px); }
+
+.pmodal-disabled-btn {
+  width: 100%;
+  padding: 0.9rem 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  font-family: var(--font-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .pmodal-root { padding: 1rem; }
+
+  .pmodal-visual { height: 200px; }
+
+  .pmodal-info { padding: 1.375rem 1.375rem 1.75rem; }
+
+  .pmodal-title { font-size: 1.5rem; }
+
+  .pmodal-details-grid {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+}

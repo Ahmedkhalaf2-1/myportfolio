@@ -25,9 +25,9 @@
   --white-faint: rgba(250, 250, 250, 0.04);
 
   /* ── Typography ── */
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-accent: 'Space Grotesk', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Fraunces', Georgia, serif;
+  --font-accent: 'Fraunces', Georgia, serif;
 
   /* ── Layout ── */
   --section-pad-y: 8rem;

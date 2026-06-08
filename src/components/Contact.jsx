@@ -1,196 +1,317 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import AnimatedSection from './AnimatedSection'
-import ScrollFloat from './ScrollFloat'
+import { motion, AnimatePresence } from 'framer-motion'
 import './Contact.css'
 
 export default function Contact() {
-  const [formState, setFormState] = useState({ name: '', email: '', message: '' })
+  const [formData, setFormData] = useState({
+    message: '',
+    name: '',
+    email: '',
+    projectType: '',
+    budget: '',
+    timeline: ''
+  })
+  
+  const [showOptional, setShowOptional] = useState(false)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
-  const handleChange = e => {
-    setFormState(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  const handleTextChange = e => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const selectOption = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: prev[field] === value ? '' : value }))
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
     setSending(true)
-    await new Promise(r => setTimeout(r, 1200))
+    await new Promise(r => setTimeout(r, 1500))
     setSending(false)
     setSent(true)
-    setFormState({ name: '', email: '', message: '' })
+    setFormData({
+      message: '',
+      name: '',
+      email: '',
+      projectType: '',
+      budget: '',
+      timeline: ''
+    })
     setTimeout(() => setSent(false), 4000)
+  }
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } }
   }
 
   return (
     <section id="contact" className="section contact-section">
-      {/* Big glow */}
-      <div className="contact-glow" />
+      <div className="contact-ambient-glow" />
+      <div className="contact-heading-glow" />
 
       <div className="container">
-        {/* CTA headline */}
-        <AnimatedSection>
+        
+        {/* ── Section Header ── */}
+        <motion.div 
+          className="contact-header-wrap"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
           <div className="section-label">
             <span>Get In Touch</span>
           </div>
-          <ScrollFloat
-            containerClassName="contact-title-container"
-            textClassName="display-lg contact-title"
-            scrollStart="top bottom-=10%"
-          >
-            Let's build something
-          </ScrollFloat>
-          <h2 className="display-lg contact-title">
-            <span className="gold-text-shimmer">premium.</span>
+          <h2 className="display-sm contact-hero-title">
+            Have a Project <span className="gold-text">in Mind?</span>
           </h2>
-          <p className="body-lg contact-subtitle">
-            Have a project, opportunity, or just want to connect? I'd love to hear from you.
+          <p className="contact-hero-intro">
+            Let's discuss how we can turn your idea into a polished digital experience.
           </p>
-        </AnimatedSection>
+        </motion.div>
 
-        <div className="contact-grid">
-          {/* Left: Form */}
-          <AnimatedSection delay={0.1} className="contact-form-wrap">
-            <form className="contact-form" onSubmit={handleSubmit} id="contact-form">
-              <div className="form-group">
-                <label htmlFor="contact-name" className="form-label">Your Name</label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  name="name"
-                  className="form-input"
-                  placeholder="e.g. John Doe"
-                  value={formState.name}
-                  onChange={handleChange}
-                  required
-                />
+        {/* ── Contact Grid Layout ── */}
+        <div className="contact-layout-grid">
+          
+          {/* LEFT: Compact Form */}
+          <div className="contact-form-side">
+            <form onSubmit={handleSubmit} className="conversational-form">
+              
+              {/* STEP 1: Message */}
+              <div className="form-step-block">
+                <div className="step-num-tag">Step 01</div>
+                <label className="step-label" htmlFor="msg-textarea">Tell me about your project...</label>
+                <div className="textarea-container">
+                  <textarea
+                    id="msg-textarea"
+                    name="message"
+                    required
+                    rows={3}
+                    placeholder="Describe your idea or goals..."
+                    value={formData.message}
+                    onChange={handleTextChange}
+                    className="conv-textarea"
+                  />
+                  <div className="textarea-border-focus" />
+                </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="contact-email" className="form-label">Email Address</label>
-                <input
-                  id="contact-email"
-                  type="email"
-                  name="email"
-                  className="form-input"
-                  placeholder="hello@example.com"
-                  value={formState.email}
-                  onChange={handleChange}
-                  required
-                />
+              {/* STEP 2 & 3: Inline Fields on Desktop */}
+              <div className="form-inline-fields">
+                {/* STEP 2: Name */}
+                <div className="form-step-block">
+                  <div className="step-num-tag">Step 02</div>
+                  <label className="step-label" htmlFor="name-input">Your Name</label>
+                  <div className="input-container">
+                    <input
+                      id="name-input"
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="What should I call you?"
+                      value={formData.name}
+                      onChange={handleTextChange}
+                      className="conv-input"
+                    />
+                    <div className="input-border-focus" />
+                  </div>
+                </div>
+
+                {/* STEP 3: Email */}
+                <div className="form-step-block">
+                  <div className="step-num-tag">Step 03</div>
+                  <label className="step-label" htmlFor="email-input">Email Address</label>
+                  <div className="input-container">
+                    <input
+                      id="email-input"
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="Where should I reply?"
+                      value={formData.email}
+                      onChange={handleTextChange}
+                      className="conv-input"
+                    />
+                    <div className="input-border-focus" />
+                  </div>
+                </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="contact-message" className="form-label">Message</label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  className="form-input form-textarea"
-                  placeholder="Tell me about your project..."
-                  rows={5}
-                  value={formState.message}
-                  onChange={handleChange}
-                  required
-                />
+              {/* COLLAPSIBLE ACCORDION FOR OPTIONAL DETAILS */}
+              <div className="optional-details-accordion">
+                <button
+                  type="button"
+                  onClick={() => setShowOptional(!showOptional)}
+                  className="accordion-toggle-btn"
+                >
+                  <span>Optional Project Details</span>
+                  <motion.span 
+                    className="accordion-toggle-icon"
+                    animate={{ rotate: showOptional ? 45 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    +
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {showOptional && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1, transition: { height: { duration: 0.35 }, opacity: { duration: 0.2, delay: 0.05 } } }}
+                      exit={{ height: 0, opacity: 0, transition: { height: { duration: 0.3 }, opacity: { duration: 0.15 } } }}
+                      className="accordion-content-overflow"
+                    >
+                      <div className="accordion-content-inner">
+                        {/* Project Type */}
+                        <div className="pills-group">
+                          <span className="pills-group-label">Project Type</span>
+                          <div className="pills-row">
+                            {['Web App', 'Mobile App', 'Business System', 'Design System'].map(t => (
+                              <button
+                                type="button"
+                                key={t}
+                                onClick={() => selectOption('projectType', t)}
+                                className={`pills-item ${formData.projectType === t ? 'pills-item--active' : ''}`}
+                              >
+                                {t}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Budget */}
+                        <div className="pills-group">
+                          <span className="pills-group-label">Budget Range</span>
+                          <div className="pills-row">
+                            {['< $5k', '$5k - $15k', '$15k+'].map(b => (
+                              <button
+                                type="button"
+                                key={b}
+                                onClick={() => selectOption('budget', b)}
+                                className={`pills-item ${formData.budget === b ? 'pills-item--active' : ''}`}
+                              >
+                                {b}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Timeline */}
+                        <div className="pills-group">
+                          <span className="pills-group-label">Estimated Timeline</span>
+                          <div className="pills-row">
+                            {['< 1 Month', '1 - 3 Months', '3+ Months'].map(tm => (
+                              <button
+                                type="button"
+                                key={tm}
+                                onClick={() => selectOption('timeline', tm)}
+                                className={`pills-item ${formData.timeline === tm ? 'pills-item--active' : ''}`}
+                              >
+                                {tm}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              <motion.button
-                type="submit"
-                className={`btn btn-gold contact-submit ${sending ? 'sending' : ''} ${sent ? 'sent' : ''}`}
-                disabled={sending || sent}
-                whileHover={!sending && !sent ? { scale: 1.02 } : {}}
-                whileTap={!sending && !sent ? { scale: 0.98 } : {}}
-                id="contact-submit-btn"
-              >
-                {sent ? (
-                  <>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    Message Sent!
-                  </>
-                ) : sending ? (
-                  <>
-                    <span className="spinner" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    Send Message
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                      <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-                    </svg>
-                  </>
-                )}
-              </motion.button>
+              {/* ACTION BUTTONS ROW */}
+              <div className="form-actions-row">
+                <motion.button
+                  type="submit"
+                  disabled={sending || sent}
+                  className={`btn-send-message ${sending ? 'btn-send-message--sending' : ''} ${sent ? 'btn-send-message--sent' : ''}`}
+                  whileHover={!sending && !sent ? { scale: 1.02 } : {}}
+                  whileTap={!sending && !sent ? { scale: 0.98 } : {}}
+                  transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+                >
+                  {sent ? 'Message Sent!' : sending ? 'Sending...' : 'Send Message'}
+                </motion.button>
+
+                <motion.a
+                  href="https://calendly.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-schedule-call"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+                >
+                  Schedule a Call
+                </motion.a>
+              </div>
+
             </form>
-          </AnimatedSection>
-
-          {/* Right: Info */}
-          <AnimatedSection delay={0.2} className="contact-info">
-            <div className="contact-info-inner">
-              <div className="contact-info-block">
-                <p className="contact-info-label">Email</p>
-                <a href="mailto:hello@ahmed.dev" className="contact-info-link" id="contact-email-link">
-                  hello@ahmed.dev
-                </a>
+          </div>
+          
+          {/* RIGHT: Compact Info Panel */}
+          <motion.div 
+            className="contact-info-side"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="editorial-info-wrap">
+              
+              {/* Based In */}
+              <div className="info-editorial-block">
+                <span className="editorial-label">Based In</span>
+                <span className="editorial-value">Egypt</span>
               </div>
 
-              <div className="contact-info-block">
-                <p className="contact-info-label">Based in</p>
-                <p className="contact-info-text">Egypt · HTI University</p>
+              {/* Building */}
+              <div className="info-editorial-block">
+                <span className="editorial-label">Building</span>
+                <ul className="editorial-list">
+                  <li>Web &amp; Mobile Apps</li>
+                  <li>Business Systems &amp; Products</li>
+                </ul>
               </div>
 
-              <div className="contact-info-block">
-                <p className="contact-info-label">Available for</p>
-                <div className="contact-avail">
-                  {['Freelance Projects', 'UI/UX Design', 'Frontend Dev', 'Collaboration'].map(item => (
-                    <span key={item} className="badge">{item}</span>
-                  ))}
-                </div>
+              {/* Available For */}
+              <div className="info-editorial-block">
+                <span className="editorial-label">Available For</span>
+                <ul className="editorial-list">
+                  <li>Freelance, Remote &amp; Collaborations</li>
+                </ul>
               </div>
 
-              {/* Social links */}
-              <div className="contact-socials">
-                <p className="contact-info-label" style={{ marginBottom: '0.875rem' }}>Find me on</p>
-                <div className="social-links">
+              {/* Find Me On */}
+              <div className="info-editorial-block">
+                <span className="editorial-label">Find Me On</span>
+                <div className="editorial-social-links">
                   {[
-                    {
-                      name: 'LinkedIn', href: 'https://linkedin.com/in/ahmed',
-                      icon: (
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                      )
-                    },
-                    {
-                      name: 'Behance', href: 'https://behance.net/ahmed',
-                      icon: (
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                          <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h2.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H1.051V5.033H7.1c2.686 0 4.387 1.318 4.387 3.586 0 1.498-.686 2.51-1.834 3.105 1.648.544 2.585 1.699 2.585 3.355 0 2.648-2.017 3.909-5.772 3.909zm-3.206-7.506h3.055c1.324 0 2.165-.582 2.165-1.891 0-1.312-.814-1.926-2.138-1.926H3.26v3.817zm0 5.337h3.467c1.502 0 2.323-.666 2.323-2.044 0-1.337-.876-2.012-2.352-2.012H3.26v4.056z" />
-                        </svg>
-                      )
-                    },
-                    {
-                      name: 'GitHub', href: 'https://github.com/ahmed',
-                      icon: (
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                        </svg>
-                      )
-                    },
+                    { name: 'LinkedIn', href: 'https://linkedin.com/in/ahmed' },
+                    { name: 'Behance', href: 'https://behance.net/ahmed' },
+                    { name: 'GitHub', href: 'https://github.com/ahmed' }
                   ].map(social => (
-                    <a key={social.name} href={social.href} className="social-link" aria-label={social.name} id={`social-${social.name.toLowerCase()}`}>
-                      {social.icon}
-                      <span>{social.name}</span>
-                    </a>
+                    <motion.a
+                      key={social.name}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="editorial-social-link"
+                      whileHover={{ x: 4, color: 'var(--gold-light)' }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {social.name}
+                    </motion.a>
                   ))}
                 </div>
               </div>
+
             </div>
-          </AnimatedSection>
+          </motion.div>
+
         </div>
+
       </div>
     </section>
   )

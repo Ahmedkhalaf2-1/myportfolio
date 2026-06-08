@@ -1,15 +1,16 @@
-import AnimatedSection from './AnimatedSection'
-import ProjectCard from './ProjectCard'
-import CardSwap, { Card } from './CardSwap'
+import { useState, useCallback, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import ProjectModal from './ProjectModal'
-import { useState } from 'react'
 import './Projects.css'
 
-import adisonImg from '../assets/image.png'
+import adisonImg    from '../assets/image.png'
 import smartHomeImg from '../assets/image copy.png'
-import pharmaImg from '../assets/image copy 2.png'
-import salonImg from '../assets/image copy 3.png'
+import pharmaImg    from '../assets/image copy 2.png'
+import salonImg     from '../assets/image copy 3.png'
 
+/* ─────────────────────────────────────────────────
+   PROJECT DATA
+───────────────────────────────────────────────── */
 const projects = [
   {
     name: 'Salon System',
@@ -21,8 +22,7 @@ const projects = [
     year: '2024',
     accent: '#F472B6',
     bg: 'linear-gradient(135deg, #18030e 0%, #250516 50%, #18030e 100%)',
-    tags: ['React', 'Management'],
-    featured: true,
+    tags: ['React', 'Management', 'Dashboard'],
   },
   {
     name: 'Pharma System',
@@ -35,8 +35,7 @@ const projects = [
     year: '2024',
     accent: '#A78BFA',
     bg: 'linear-gradient(135deg, #06020f 0%, #0d0520 50%, #060212 100%)',
-    tags: ['React', 'Management'],
-    featured: true,
+    tags: ['React', 'Zustand', 'Management'],
   },
   {
     name: 'Adison.ca',
@@ -50,20 +49,18 @@ const projects = [
     accent: '#C9A84C',
     bg: 'linear-gradient(135deg, #0f0a00 0%, #1a1200 50%, #0a0800 100%)',
     tags: ['React', 'Tailwind', 'Web'],
-    featured: true,
   },
   {
     name: 'Smart Home App',
     icon: 'SH',
     image: smartHomeImg,
-    desc: 'A cross-platform mobile application built with Flutter to control and monitor smart home devices with a clean, intuitive interface.',
+    desc: 'A cross-platform mobile app built with Flutter to control and monitor smart home devices with a clean, intuitive interface.',
     category: 'Flutter App',
     focus: 'Mobile App · IoT · UI/UX',
     year: '2025',
     accent: '#4ADE80',
     bg: 'linear-gradient(135deg, #010d04 0%, #021508 50%, #010d04 100%)',
     tags: ['Flutter', 'Smart Home', 'Mobile'],
-    featured: true,
   },
   {
     name: 'Sanad — سَنَد',
@@ -74,20 +71,18 @@ const projects = [
     year: '2024',
     accent: '#7CB9E8',
     bg: 'linear-gradient(135deg, #020d1a 0%, #041525 50%, #020a14 100%)',
-    tags: ['Flutter', 'Social Impact'],
-    featured: false,
+    tags: ['Flutter', 'Social Impact', 'Arabic'],
   },
   {
     name: 'To Do App',
     icon: 'TD',
-    desc: 'A productivity-focused task management mobile application built with Flutter, featuring custom reminders and state management.',
+    desc: 'A productivity-focused task management mobile app built with Flutter, featuring custom reminders and clean state management.',
     category: 'Flutter App',
     focus: 'Mobile App · Productivity',
     year: '2024',
     accent: '#00E5FF',
     bg: 'linear-gradient(135deg, #000a0d 0%, #001419 50%, #000810 100%)',
     tags: ['Flutter', 'Productivity'],
-    featured: false,
   },
   {
     name: 'Fajtec.ca',
@@ -99,71 +94,323 @@ const projects = [
     accent: '#D4A96A',
     bg: 'linear-gradient(135deg, #0d0900 0%, #1a1200 50%, #0d0900 100%)',
     tags: ['React', 'Corporate'],
-    featured: false,
   },
   {
     name: 'MyPharmacy',
     icon: 'MP',
-    desc: 'A cross-platform mobile application built with Flutter that allows patients to manage prescriptions, order medicines, and track deliveries.',
+    desc: 'A cross-platform Flutter app that allows patients to manage prescriptions, order medicines, and track deliveries.',
     category: 'Flutter App',
     focus: 'Mobile App · Healthcare',
     year: '2025',
     accent: '#38BDF8',
     bg: 'linear-gradient(135deg, #01111d 0%, #021a2c 50%, #01111d 100%)',
     tags: ['Flutter', 'Healthcare'],
-    featured: false,
   },
 ]
 
-export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+/* ─────────────────────────────────────────────────
+   ANIMATION VARIANTS
+───────────────────────────────────────────────── */
+const imgVariants = {
+  enter: (dir) => ({ opacity: 0, x: dir > 0 ? 48 : -48, scale: 0.97 }),
+  center: {
+    opacity: 1, x: 0, scale: 1,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+  },
+  exit: (dir) => ({
+    opacity: 0, x: dir > 0 ? -48 : 48, scale: 0.97,
+    transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
+  }),
+}
 
-  const openProject = (project) => {
-    setSelectedProject(project);
-    setIsModalOpen(true);
-  };
+/* Content children stagger */
+const contentParent = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+}
+const contentChild = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.44, ease: [0.25, 0.46, 0.45, 0.94] } },
+}
+
+const pillParent = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.22 } },
+}
+const pillItem = {
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+}
+
+/* ─────────────────────────────────────────────────
+   COMPONENT
+───────────────────────────────────────────────── */
+export default function Projects() {
+  const [index, setIndex]      = useState(0)
+  const [dir, setDir]          = useState(1)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const total      = projects.length
+  const project    = projects[index]
+  const nextIndex  = (index + 1) % total
+  const nextProject = projects[nextIndex]
+
+  const pad = n => String(n + 1).padStart(2, '0')
+
+  const goNext = useCallback(() => {
+    setDir(1)
+    setIndex(i => (i + 1) % total)
+  }, [total])
+
+  const goPrev = useCallback(() => {
+    setDir(-1)
+    setIndex(i => (i - 1 + total) % total)
+  }, [total])
+
+  const openModal  = () => setModalOpen(true)
+  const closeModal = () => setModalOpen(false)
+
+  /* Keyboard navigation */
+  useEffect(() => {
+    const onKey = (e) => {
+      if (modalOpen) return
+      if (e.key === 'ArrowRight') goNext()
+      if (e.key === 'ArrowLeft')  goPrev()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [goNext, goPrev, modalOpen])
 
   return (
-    <section id="projects" className="section projects-section">
+    <motion.section
+      id="projects"
+      className="section projects-section"
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.06 }}
+      transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <div className="container">
-        <AnimatedSection>
-          <div className="section-label">
+
+        {/* ── Top bar ── */}
+        <div className="mag-topbar">
+          <div className="section-label" style={{ marginBottom: 0 }}>
             <span>Featured Work</span>
           </div>
-          <div className="projects-header">
-            <h2 className="display-md projects-title">
-              Selected <span className="gold-text">Projects</span>
-            </h2>
-            <p className="body-lg projects-subtitle">
-              A curated selection of cross-platform mobile apps built with Flutter, and web applications built with React.
-            </p>
-          </div>
-        </AnimatedSection>
 
-        {/* Projects Grid */}
-        <div className="projects-grid" style={{ marginTop: '4rem' }}>
-          {projects.map((project, idx) => (
-            <div 
-              key={project.name} 
-              onClick={() => openProject(project)}
-              style={{ cursor: 'pointer' }}
-            >
-              <ProjectCard project={project} index={idx} />
-            </div>
-          ))}
+          {/* Thin progress track */}
+          <div className="mag-progress-track">
+            <motion.div
+              className="mag-progress-fill"
+              animate={{ width: `${((index + 1) / total) * 100}%` }}
+              transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+            />
+          </div>
+
+          <div className="mag-counter">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={index}
+                className="mag-counter-cur"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.25 }}
+              >
+                {pad(index)}
+              </motion.span>
+            </AnimatePresence>
+            <span className="mag-counter-sep">/</span>
+            <span className="mag-counter-tot">{String(total).padStart(2, '0')}</span>
+          </div>
         </div>
 
-        <ProjectModal 
-          project={selectedProject} 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-        />
+        {/* ── Magazine spread ── */}
+        <div className="mag-spread">
+
+          {/* LEFT: image hero (60%) */}
+          <div className="mag-image-col">
+            <AnimatePresence mode="wait" custom={dir}>
+              <motion.div
+                key={`img-${index}`}
+                className="mag-image-frame"
+                custom={dir}
+                variants={imgVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                style={{ '--accent': project.accent }}
+              >
+                {/* Number badge */}
+                <div className="mag-num-badge">{pad(index)}</div>
+
+                {project.image ? (
+                  <motion.img
+                    src={project.image}
+                    alt={project.name}
+                    className="mag-img"
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    style={{ cursor: project.link ? 'pointer' : 'default' }}
+                    onClick={() => {
+                      if (project.link) {
+                        window.open(project.link, '_blank', 'noopener,noreferrer');
+                      }
+                    }}
+                  />
+                ) : (
+                  <motion.div
+                    className="mag-monogram"
+                    style={{ 
+                      background: project.bg, 
+                      color: project.accent,
+                      cursor: project.link ? 'pointer' : 'default'
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: 0.5 }}
+                    onClick={() => {
+                      if (project.link) {
+                        window.open(project.link, '_blank', 'noopener,noreferrer');
+                      }
+                    }}
+                  >
+                    {project.icon}
+                  </motion.div>
+                )}
+
+                <div className="mag-img-overlay" />
+                {project.link && <div className="mag-img-hint">Click to visit website</div>}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT: editorial content (40%) */}
+          <div className="mag-detail-col">
+            <AnimatePresence mode="wait" custom={dir}>
+              <motion.div
+                key={`detail-${index}`}
+                className="mag-detail-inner"
+                custom={dir}
+                variants={contentParent}
+                initial="hidden"
+                animate="visible"
+                exit={{ opacity: 0, x: dir > 0 ? -32 : 32, transition: { duration: 0.3 } }}
+              >
+
+                {/* Category + year */}
+                <motion.div className="mag-meta-row" variants={contentChild}>
+                  <span className="mag-category" style={{ color: project.accent }}>
+                    {project.category}
+                  </span>
+                  <span className="mag-year">{project.year}</span>
+                </motion.div>
+
+                {/* Thin rule */}
+                <motion.div className="mag-rule" variants={contentChild} />
+
+                {/* Title */}
+                <motion.h2 className="mag-title" variants={contentChild}>
+                  {project.name}
+                </motion.h2>
+
+                {/* Description */}
+                <motion.p className="mag-desc" variants={contentChild}>
+                  {project.desc}
+                </motion.p>
+
+                {/* Tech pills */}
+                <motion.ul
+                  className="mag-pills"
+                  variants={pillParent}
+                  key={`pills-${index}`}
+                >
+                  {project.tags.map(tag => (
+                    <motion.li key={tag} className="mag-pill" variants={pillItem}>
+                      {tag}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+
+                {/* CTA */}
+                <motion.div className="mag-actions" variants={contentChild}>
+                  {project.link ? (
+                    <motion.a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mag-btn mag-btn--primary"
+                      style={{ textDecoration: 'none' }}
+                      whileHover={{ scale: 1.02, y: -2, boxShadow: '0 0 28px rgba(212,175,55,0.4), 0 10px 28px rgba(0,0,0,0.55)' }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+                    >
+                      Visit Website
+                    </motion.a>
+                  ) : (
+                    <motion.button
+                      className="mag-btn"
+                      disabled
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.04)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        color: 'rgba(255, 255, 255, 0.28)',
+                        cursor: 'not-allowed'
+                      }}
+                    >
+                      Coming Soon
+                    </motion.button>
+                  )}
+                </motion.div>
+
+                {/* ── Navigation ── */}
+                <motion.div className="mag-nav" variants={contentChild}>
+                  <motion.button
+                    className="mag-nav-btn"
+                    onClick={goPrev}
+                    whileHover={{ scale: 1.04, borderColor: 'rgba(212,175,55,0.3)' }}
+                    whileTap={{ scale: 0.96 }}
+                    aria-label="Previous project"
+                  >
+                    <span className="mag-nav-arrow">←</span>
+                    <span className="mag-nav-label">Prev</span>
+                  </motion.button>
+
+                  {/* Next preview */}
+                  <button className="mag-next-preview" onClick={goNext}>
+                    <span className="mag-next-label">Up next</span>
+                    <span className="mag-next-name">{nextProject.name} →</span>
+                  </button>
+
+                  <motion.button
+                    className="mag-nav-btn"
+                    onClick={goNext}
+                    whileHover={{ scale: 1.04, borderColor: 'rgba(212,175,55,0.3)' }}
+                    whileTap={{ scale: 0.96 }}
+                    aria-label="Next project"
+                  >
+                    <span className="mag-nav-label">Next</span>
+                    <span className="mag-nav-arrow">→</span>
+                  </motion.button>
+                </motion.div>
+
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+        </div>
       </div>
 
-      <div className="container" style={{ marginTop: '4rem' }}>
+      {/* Bottom divider */}
+      <div className="container" style={{ marginTop: '5rem' }}>
         <hr className="gold-line-full" />
       </div>
-    </section>
+
+      {/* Modal — always receives currently displayed project */}
+      <ProjectModal
+        project={project}
+        isOpen={modalOpen}
+        onClose={closeModal}
+      />
+    </motion.section>
   )
 }

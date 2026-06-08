@@ -89,7 +89,7 @@
   border-radius: 999px;
   color: rgba(244, 241, 236, 0.48);
   text-decoration: none;
-  font-family: var(--font-accent, 'Inter', sans-serif);
+  font-family: var(--font-accent, 'Fraunces', serif);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -225,7 +225,7 @@
   padding: 0.9rem 1rem;
   border-radius: 13px;
   color: rgba(244, 241, 236, 0.62);
-  font-family: var(--font-accent, 'Inter', sans-serif);
+  font-family: var(--font-accent, 'Fraunces', serif);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.14em;

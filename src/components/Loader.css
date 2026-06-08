@@ -59,7 +59,7 @@
 }
 
 .loader-monogram {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Fraunces', Georgia, serif;
   font-size: 3.5rem;
   font-weight: 600;
   color: #C9A84C;
@@ -79,7 +79,7 @@
 }
 
 .loader-name {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.25em;
@@ -88,7 +88,7 @@
 }
 
 .loader-tagline {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
   font-size: 0.7rem;
   font-weight: 400;
   letter-spacing: 0.15em;
