@@ -189,11 +189,11 @@ export default function Projects() {
 
     if (Math.abs(diffX) > minSwipeDistance) {
       if (diffX < 0) {
-        // Swipe right (finger moves left-to-right) -> next project
-        goNext()
-      } else {
-        // Swipe left (finger moves right-to-left) -> previous project
+        // Swipe right (finger moves left-to-right) -> previous project
         goPrev()
+      } else {
+        // Swipe left (finger moves right-to-left) -> next project
+        goNext()
       }
     }
   }
