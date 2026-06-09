@@ -3,12 +3,12 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import ProjectModal from './ProjectModal'
 import './Projects.css'
 
-import adisonImg    from '../assets/image.png'
+import adisonImg from '../assets/image.png'
 import smartHomeImg from '../assets/image copy 6.png'
-import pharmaImg    from '../assets/image copy 2.png'
-import salonImg     from '../assets/image copy 3.png'
-import fajtechImg   from '../assets/image copy 5.png'
-import todoImg      from '../assets/image copy 7.png'
+import pharmaImg from '../assets/image copy 2.png'
+import salonImg from '../assets/image copy 3.png'
+import fajtechImg from '../assets/image copy 5.png'
+import todoImg from '../assets/image copy 7.png'
 
 /* ─────────────────────────────────────────────────
    PROJECT DATA
@@ -147,13 +147,13 @@ const projects = [
    ───────────────────────────────────────────────── */
 export default function Projects() {
   const shouldReduceMotion = useReducedMotion()
-  const [index, setIndex]      = useState(0)
-  const [dir, setDir]          = useState(1)
+  const [index, setIndex] = useState(0)
+  const [dir, setDir] = useState(1)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const total      = projects.length
-  const project    = projects[index]
-  const nextIndex  = (index + 1) % total
+  const total = projects.length
+  const project = projects[index]
+  const nextIndex = (index + 1) % total
   const nextProject = projects[nextIndex]
 
   const pad = n => String(n + 1).padStart(2, '0')
@@ -168,7 +168,7 @@ export default function Projects() {
     setIndex(i => (i - 1 + total) % total)
   }, [total])
 
-  const openModal  = () => setModalOpen(true)
+  const openModal = () => setModalOpen(true)
   const closeModal = () => setModalOpen(false)
 
   const touchStartX = useRef(0)
@@ -203,7 +203,7 @@ export default function Projects() {
     const onKey = (e) => {
       if (modalOpen) return
       if (e.key === 'ArrowRight') goNext()
-      if (e.key === 'ArrowLeft')  goPrev()
+      if (e.key === 'ArrowLeft') goPrev()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -216,21 +216,21 @@ export default function Projects() {
 
   const imgVariants = shouldReduceMotion
     ? {
-        enter: { opacity: 0 },
-        center: { opacity: 1, transition: { duration: 0.3 } },
-        exit: { opacity: 0, transition: { duration: 0.25 } }
-      }
+      enter: { opacity: 0 },
+      center: { opacity: 1, transition: { duration: 0.3 } },
+      exit: { opacity: 0, transition: { duration: 0.25 } }
+    }
     : {
-        enter: (dir) => ({ opacity: 0, y: dir > 0 ? 25 : -25, scale: 0.97 }),
-        center: {
-          opacity: 1, y: 0, scale: 1,
-          transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-        },
-        exit: (dir) => ({
-          opacity: 0, y: dir > 0 ? -25 : 25, scale: 0.97,
-          transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-        }),
-      }
+      enter: (dir) => ({ opacity: 0, y: dir > 0 ? 25 : -25, scale: 0.97 }),
+      center: {
+        opacity: 1, y: 0, scale: 1,
+        transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+      },
+      exit: (dir) => ({
+        opacity: 0, y: dir > 0 ? -25 : 25, scale: 0.97,
+        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+      }),
+    }
 
   const contentParent = {
     hidden: {},
@@ -300,7 +300,7 @@ export default function Projects() {
         </div>
 
         {/* ── Magazine spread ── */}
-        <div 
+        <div
           className="mag-spread"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -323,7 +323,7 @@ export default function Projects() {
                 {/* Number badge */}
                 <div className="mag-num-badge">{pad(index)}</div>
 
-                 {project.image ? (
+                {project.image ? (
                   <motion.img
                     src={project.image}
                     alt={project.name}
@@ -340,8 +340,8 @@ export default function Projects() {
                 ) : (
                   <motion.div
                     className="mag-monogram"
-                    style={{ 
-                      background: project.bg, 
+                    style={{
+                      background: project.bg,
                       color: project.accent,
                       cursor: project.link ? 'pointer' : 'default'
                     }}
