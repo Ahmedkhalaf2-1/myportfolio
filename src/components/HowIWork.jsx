@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
 import './HowIWork.css'
 
@@ -33,13 +33,20 @@ const steps = [
   }
 ]
 
-function RoadmapStep({ step, idx, shouldReduceMotion }) {
+function RoadmapStep({ step, idx, activeStep, setActiveStep, shouldReduceMotion }) {
   const ref = useRef(null)
   
   // Triggers active state when step is in the middle section of screen
   const isActive = useInView(ref, {
-    margin: '-42% 0px -42% 0px'
+    margin: '-45% 0px -45% 0px'
   })
+
+  // Notify parent about active step to sync line and timeline animations
+  useEffect(() => {
+    if (isActive) {
+      setActiveStep(idx)
+    }
+  }, [isActive, idx, setActiveStep])
 
   const itemVariants = shouldReduceMotion
     ? {
@@ -47,20 +54,22 @@ function RoadmapStep({ step, idx, shouldReduceMotion }) {
         visible: { opacity: 1, transition: { duration: 0.4 } }
       }
     : {
-        hidden: { opacity: 0, y: 30, x: -10 },
-        visible: { opacity: 1, y: 0, x: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+        hidden: { opacity: 0, x: 40 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
       }
+
+  let statusClass = 'roadmap-step-row--pending'
+  if (activeStep === idx) statusClass = 'roadmap-step-row--active'
+  else if (activeStep > idx) statusClass = 'roadmap-step-row--completed'
 
   return (
     <motion.div
       ref={ref}
-      className={`roadmap-step-row ${isActive ? 'roadmap-step-row--active' : ''}`}
+      className={`roadmap-step-row ${statusClass}`}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.25 }}
       variants={itemVariants}
-      animate={isActive ? { opacity: 1 } : { opacity: shouldReduceMotion ? 1 : 0.4 }}
-      transition={{ duration: 0.4 }}
     >
       {/* COLUMN 1: Large Step Number */}
       <div className="roadmap-num-col">
@@ -81,32 +90,16 @@ function RoadmapStep({ step, idx, shouldReduceMotion }) {
         <p className="roadmap-step-desc">{step.desc}</p>
 
         {/* Tags */}
-        <motion.div 
-          className="roadmap-tags-list"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: { staggerChildren: shouldReduceMotion ? 0 : 0.08, delayChildren: 0.12 }
-            }
-          }}
-        >
+        <div className="roadmap-tags-list">
           {step.tags.map(tag => (
-            <motion.span 
+            <span 
               key={tag}
               className="roadmap-tag-item"
-              variants={{
-                hidden: { opacity: 0, scale: 0.88, y: 6 },
-                visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } }
-              }}
-              whileHover={{ y: -2, borderColor: 'rgba(201,168,76,0.4)', color: 'var(--gold-light)' }}
             >
               {tag}
-            </motion.span>
+            </span>
           ))}
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   )
@@ -115,18 +108,19 @@ function RoadmapStep({ step, idx, shouldReduceMotion }) {
 export default function HowIWork() {
   const containerRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
+  const [activeStep, setActiveStep] = useState(0)
   
-  // Track scroll for the vertical roadmap line
+  // Track scroll for the vertical roadmap line fill
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 70%', 'end 70%']
+    offset: ['start 60%', 'end 85%']
   })
 
   const scaleY = shouldReduceMotion ? 1 : useTransform(scrollYProgress, [0, 1], [0, 1])
 
   return (
     <section id="process" className="section how-i-work-section" ref={containerRef}>
-      {/* Ambient glows copied from About Me */}
+      {/* Ambient glows */}
       <div className="section-glow section-glow--tl" />
       <div className="section-glow section-glow--br" />
       <div className="section-glow section-glow--hero" />
@@ -154,7 +148,7 @@ export default function HowIWork() {
 
         {/* Vertical Roadmap Timeline */}
         <div className="roadmap-wrapper">
-          {/* Timeline Line (Centered relative to the columns) */}
+          {/* Timeline Line */}
           <div className="roadmap-line-container">
             <div className="roadmap-line-track">
               <motion.div 
@@ -171,6 +165,8 @@ export default function HowIWork() {
                 key={step.num} 
                 step={step} 
                 idx={idx} 
+                activeStep={activeStep}
+                setActiveStep={setActiveStep}
                 shouldReduceMotion={shouldReduceMotion} 
               />
             ))}
