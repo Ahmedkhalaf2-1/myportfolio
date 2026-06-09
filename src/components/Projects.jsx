@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import ProjectModal from './ProjectModal'
 import './Projects.css'
@@ -171,6 +171,33 @@ export default function Projects() {
   const openModal  = () => setModalOpen(true)
   const closeModal = () => setModalOpen(false)
 
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX
+    touchEndX.current = e.targetTouches[0].clientX
+  }
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX
+  }
+
+  const handleTouchEnd = () => {
+    const diffX = touchStartX.current - touchEndX.current
+    const minSwipeDistance = 50
+
+    if (Math.abs(diffX) > minSwipeDistance) {
+      if (diffX < 0) {
+        // Swipe right (finger moves left-to-right) -> next project
+        goNext()
+      } else {
+        // Swipe left (finger moves right-to-left) -> previous project
+        goPrev()
+      }
+    }
+  }
+
   /* Keyboard navigation */
   useEffect(() => {
     const onKey = (e) => {
@@ -273,7 +300,12 @@ export default function Projects() {
         </div>
 
         {/* ── Magazine spread ── */}
-        <div className="mag-spread">
+        <div 
+          className="mag-spread"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
 
           {/* LEFT: image hero (60%) */}
           <div className="mag-image-col">
