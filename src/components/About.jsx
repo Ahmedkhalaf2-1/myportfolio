@@ -1,43 +1,17 @@
-import { motion, useInView, animate, useReducedMotion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { useState } from 'react'
 import AnimatedSection from './AnimatedSection'
 import './About.css'
 
-/* ══════════════════════════════════════
-   COUNTER HOOK — animates 0 → target
-   ══════════════════════════════════════ */
-function useCounter(target, duration = 1.5) {
-  const [value, setValue] = useState(0)
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount: 0.6 })
+const marqueeRow1 = [
+  'React', 'Next.js', 'Flutter', 'HTML', 'Tailwind CSS', 'Zustand', 'TypeScript',
+  'Dart', 'Expo', 'iOS & Android', 'Cross-platform'
+]
 
-  useEffect(() => {
-    if (!inView) return
-    const controls = animate(0, target, {
-      duration,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: v => setValue(Math.round(v)),
-    })
-    return () => controls.stop()
-  }, [inView, target, duration])
-
-  return { value, ref }
-}
-
-/* ══════════════════════════════════════
-   STAT COUNTER COMPONENT
-   ══════════════════════════════════════ */
-function StatCounter({ target, label }) {
-  const { value, ref } = useCounter(target)
-  return (
-    <div className="bento-stat" ref={ref}>
-      <span className="bento-stat-num">
-        {value}<span className="bento-stat-sup">+</span>
-      </span>
-      <span className="bento-stat-label">{label}</span>
-    </div>
-  )
-}
+const marqueeRow2 = [
+  'Node.js', 'Python', 'PostgreSQL', 'MySQL', 'REST APIs',
+  'Antigravity Codex', 'Claude', 'Cursor', 'AI Workflows', 'Automation', 'Git', 'Web Development'
+]
 
 /* ══════════════════════════════════════
    MAIN COMPONENT
@@ -47,7 +21,7 @@ export default function About() {
   /* Focus-defocus state: which card is hovered */
   const [hoveredCard, setHoveredCard] = useState(null)
 
-  const cardIds = ['about', 'react', 'mobile', 'backend', 'ai', 'stats']
+  const cardIds = ['about']
 
   const getCardClass = (id) => {
     if (hoveredCard === null) return ''
@@ -67,18 +41,13 @@ export default function About() {
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
     : { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] } } }
 
-  const gridVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: shouldReduceMotion ? 0.05 : 0.1, delayChildren: 0.1 } }
-  }
-
   const cardVariants = shouldReduceMotion
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.3 } } }
-    : { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.3, delay: 0.25 } } }
+    : { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] } } }
 
-  const statsCardVariants = shouldReduceMotion
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } }
-    : { hidden: { opacity: 0, scale: 0.96, y: 15 }, visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } }
+  const tickerVariants = shouldReduceMotion
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, delay: 0.5 } } }
+    : { hidden: { opacity: 0, y: 15 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] } } }
 
   return (
     <motion.section
@@ -117,21 +86,14 @@ export default function About() {
           </motion.em>
         </motion.h2>
 
-        {/* ═══════════════════════════
-            BENTO GRID
-        ═══════════════════════════ */}
-        <motion.div
-          className="bento-grid"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.06 }}
-          variants={gridVariants}
-        >
-
+        <div className="about-card-wrapper">
           {/* 1 · Primary — Large About card */}
           <motion.div
             className={`bento-card bento-about ${getCardClass('about')}`}
             variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.06 }}
             onHoverStart={() => setHoveredCard('about')}
             onHoverEnd={() => setHoveredCard(null)}
           >
@@ -145,9 +107,14 @@ export default function About() {
             <p className="bento-about-bio">
               My work spans <span className="gold-key">React</span> web applications,{' '}
               <span className="gold-key">Flutter</span> mobile apps,{' '}
-              <span className="gold-key">backend</span> systems, and{' '}
-              <span className="gold-key">AI</span>-assisted workflows — allowing me
+              backend systems, and{' '}
+              AI-assisted workflows — allowing me
               to ship complete, scalable, and production-ready products.
+            </p>
+            <p className="bento-about-bio">
+              I am passionate about clean architecture, performance optimization, and
+              pixel-perfect UI execution. I bridge the gap between complex engineering
+              requirements and intuitive, user-centered design systems.
             </p>
             <div className="bento-about-meta">
               <div className="bento-meta-row">
@@ -158,94 +125,55 @@ export default function About() {
                 <span className="bento-meta-key">Focus</span>
                 <span className="bento-meta-val">Premium digital products &amp; systems</span>
               </div>
+              <div className="bento-meta-row">
+                <span className="bento-meta-key">Core Stack</span>
+                <span className="bento-meta-val">React · Flutter · Node.js · Dart</span>
+              </div>
+              <div className="bento-meta-row">
+                <span className="bento-meta-key">Location</span>
+                <span className="bento-meta-val">Cairo, Egypt · Remote Worldwide</span>
+              </div>
             </div>
           </motion.div>
+        </div>
+      </div>
 
-          {/* 2 · Tertiary — React card */}
-          <motion.div
-            className={`bento-card bento-react ${getCardClass('react')}`}
-            variants={cardVariants}
-            onHoverStart={() => setHoveredCard('react')}
-            onHoverEnd={() => setHoveredCard(null)}
-          >
-            <p className="bento-eyebrow">Web</p>
-            <h3 className="bento-card-title">React Stack</h3>
-            <ul className="bento-pill-list">
-              {['React', 'Next.js', 'Tailwind', 'Zustand', 'TypeScript'].map(t => (
-                <li key={t} className="bento-pill">{t}</li>
-              ))}
-            </ul>
-          </motion.div>
+      {/* Infinite Scrolling Tech Marquee */}
+      <motion.div
+        className="tech-marquee-container"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={tickerVariants}
+      >
+        {/* Row 1: Left moving */}
+        <div className="tech-marquee-row tech-marquee-row--left">
+          <div className="tech-marquee-track">
+            {marqueeRow1.concat(marqueeRow1).concat(marqueeRow1).map((item, idx) => (
+              <span key={idx} className="marquee-pill-wrapper">
+                <span className="marquee-pill">{item}</span>
+                <span className="marquee-separator">✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
 
-          {/* 3 · Tertiary — Mobile card */}
-          <motion.div
-            className={`bento-card bento-mobile ${getCardClass('mobile')}`}
-            variants={cardVariants}
-            onHoverStart={() => setHoveredCard('mobile')}
-            onHoverEnd={() => setHoveredCard(null)}
-          >
-            <p className="bento-eyebrow">Mobile</p>
-            <h3 className="bento-card-title">Flutter</h3>
-            <ul className="bento-pill-list">
-              {['Flutter', 'Dart', 'Expo', 'iOS & Android', 'Cross-platform'].map(t => (
-                <li key={t} className="bento-pill">{t}</li>
-              ))}
-            </ul>
-          </motion.div>
+        {/* Row 2: Right moving */}
+        <div className="tech-marquee-row tech-marquee-row--right">
+          <div className="tech-marquee-track">
+            {marqueeRow2.concat(marqueeRow2).concat(marqueeRow2).map((item, idx) => (
+              <span key={idx} className="marquee-pill-wrapper">
+                <span className="marquee-pill">{item}</span>
+                <span className="marquee-separator">✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
 
-          {/* 4 · Tertiary — Backend card */}
-          <motion.div
-            className={`bento-card bento-backend ${getCardClass('backend')}`}
-            variants={cardVariants}
-            onHoverStart={() => setHoveredCard('backend')}
-            onHoverEnd={() => setHoveredCard(null)}
-          >
-            <p className="bento-eyebrow">Backend</p>
-            <h3 className="bento-card-title">Server &amp; Data</h3>
-            <ul className="bento-pill-list bento-pill-list--row">
-              {['Node.js', 'Python', 'PostgreSQL', 'MySQL', 'REST APIs'].map(t => (
-                <li key={t} className="bento-pill">{t}</li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* 5 · Tertiary — AI & Tools card */}
-          <motion.div
-            className={`bento-card bento-ai ${getCardClass('ai')}`}
-            variants={cardVariants}
-            onHoverStart={() => setHoveredCard('ai')}
-            onHoverEnd={() => setHoveredCard(null)}
-          >
-            <p className="bento-eyebrow">Intelligence</p>
-            <h3 className="bento-card-title">AI &amp; Tools</h3>
-            <ul className="bento-pill-list">
-              {['Claude', 'Cursor', 'AI Workflows', 'Automation', 'Git'].map(t => (
-                <li key={t} className="bento-pill">{t}</li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* 6 · Secondary — Career Highlights */}
-          <motion.div
-            className={`bento-card bento-stats ${getCardClass('stats')}`}
-            variants={statsCardVariants}
-            onHoverStart={() => setHoveredCard('stats')}
-            onHoverEnd={() => setHoveredCard(null)}
-          >
-            <p className="bento-eyebrow">Career Highlights</p>
-            <div className="bento-stats-row">
-              <StatCounter target={3} label="Years of Experience" />
-              <div className="bento-stat-divider" />
-              <StatCounter target={20} label="Projects Shipped" />
-              <div className="bento-stat-divider" />
-              <StatCounter target={10} label="Technologies" />
-            </div>
-          </motion.div>
-
-        </motion.div>
-
+      <div className="container">
         {/* ── CTA ── */}
-        <AnimatedSection delay={0.3}>
+        <AnimatedSection delay={0.65}>
           <div className="about-cta">
             <motion.a
               href="#projects"
@@ -278,7 +206,6 @@ export default function About() {
             </motion.a>
           </div>
         </AnimatedSection>
-
       </div>
 
       {/* Bottom divider */}
