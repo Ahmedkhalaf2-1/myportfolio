@@ -212,21 +212,33 @@ export default function Navbar() {
         {menuOpen && (
           <motion.aside
             className="mobile-menu"
-            initial={{ opacity: 0, y: -16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -16, scale: 0.98 }}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{
-              duration: 0.24,
-              ease: [0.4, 0, 0.2, 1],
+              duration: 0.38,
+              ease: [0.16, 1, 0.3, 1],
             }}
           >
+            <div className="mobile-menu-header">
+              <span className="mobile-menu-title">NAVIGATION</span>
+              <button
+                type="button"
+                className="mobile-menu-close"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
             <ul className="mobile-links">
               {navLinks.map((link, index) => (
                 <motion.li
                   key={link.href}
-                  initial={{ opacity: 0, x: -14 }}
+                  initial={{ opacity: 0, x: 14 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.035 }}
+                  transition={{ delay: index * 0.045 }}
                 >
                   <a
                     href={link.href}
