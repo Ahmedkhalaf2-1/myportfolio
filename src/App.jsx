@@ -9,6 +9,7 @@ import Projects from './components/Projects'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import SmoothScroll from './components/SmoothScroll'
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -45,6 +46,7 @@ function App() {
         </main>
 
         <Footer />
+        <Analytics />
       </div>
     </>
   )
